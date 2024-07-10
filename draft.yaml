@@ -1,0 +1,11 @@
+models:
+  Student:
+    class_id: integer nullable
+    section_id: integer nullable
+    name: string
+    email: string
+  Classes:
+    name: string
+  Sections:
+    name: string
+    class_id: iteger nullable
