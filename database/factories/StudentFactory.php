@@ -21,10 +21,10 @@ class StudentFactory extends Factory
     public function definition(): array
     {
         return [
-            'class_id' => $this->faker->numberBetween(-10000, 10000),
-            'section_id' => $this->faker->numberBetween(-10000, 10000),
+//            'class_id' => $this->faker->numberBetween(-10000, 10000),
+//            'section_id' => $this->faker->numberBetween(-10000, 10000),
             'name' => $this->faker->name(),
-            'email' => $this->faker->safeEmail(),
+            'email' => $this->faker->unique()->safeEmail(),
         ];
     }
 }
