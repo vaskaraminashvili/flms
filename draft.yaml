@@ -6,6 +6,6 @@ models:
     email: string
   Classes:
     name: string
-  Sections:
+  Section:
     name: string
     class_id: iteger nullable

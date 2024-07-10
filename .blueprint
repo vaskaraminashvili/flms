@@ -1,0 +1,15 @@
+created:
+    - database/factories/StudentFactory.php
+    - database/factories/ClassesFactory.php
+    - database/factories/SectionFactory.php
+    - database/migrations/2024_07_10_135727_create_students_table.php
+    - database/migrations/2024_07_10_135728_create_classes_table.php
+    - database/migrations/2024_07_10_135729_create_sections_table.php
+    - app/Models/Student.php
+    - app/Models/Classes.php
+    - app/Models/Section.php
+models:
+    User: { name: string, email: string, email_verified_at: 'timestamp nullable', password: string, remember_token: 'string:100 nullable' }
+    Student: { class_id: 'integer nullable', section_id: 'integer nullable', name: string, email: string }
+    Classes: { name: string }
+    Section: { name: string, class_id: 'iteger nullable' }
