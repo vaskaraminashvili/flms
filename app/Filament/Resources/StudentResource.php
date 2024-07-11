@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Exports\StudentsExport;
 use App\Filament\Resources\StudentResource\Pages;
 use App\Filament\Resources\StudentResource\RelationManagers;
 use App\Models\Section;
@@ -12,8 +13,8 @@ use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\Collection;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StudentResource extends Resource
 {
@@ -30,11 +31,11 @@ class StudentResource extends Resource
                     ->relationship('class', 'name'),
                 Forms\Components\Select::make('section_id')
                     ->label("Section")
-                    ->options(function (Get $get){
-                       $class_id = $get('class_id');
-                       if ($class_id) {
-                           return Section::where('class_id', $class_id)->pluck('name', 'id');
-                       }
+                    ->options(function (Get $get) {
+                        $class_id = $get('class_id');
+                        if ($class_id) {
+                            return Section::where('class_id', $class_id)->pluck('name', 'id');
+                        }
                     }),
                 Forms\Components\TextInput::make('name')
                     ->autofocus()
@@ -83,6 +84,12 @@ class StudentResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('export')
+                        ->label('Export to Excel')
+                        ->icon('heroicon-o-rectangle-stack ')
+                        ->action(function (Collection $records) {
+                            return Excel::download(new StudentsExport($records), 'students.xlsx');
+                        })
                 ]),
             ]);
     }
