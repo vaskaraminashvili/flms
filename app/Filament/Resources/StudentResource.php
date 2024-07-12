@@ -27,7 +27,7 @@ class StudentResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        return self::$model::count();
     }
 
     public static function table(Table $table): Table
@@ -85,7 +85,11 @@ class StudentResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('generate_invoice')
-                    ->url(fn(Student $student) => route('invoice.generate', $student))
+                    ->url(fn(Student $student) => route('invoice.generate', $student)),
+                Tables\Actions\Action::make('qrCode')
+                    ->url(function (Student $student) {
+                        return self::getUrl('qrCode', ['record' => $student]);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -140,6 +144,7 @@ class StudentResource extends Resource
             'index' => Pages\ListStudents::route('/'),
             'create' => Pages\CreateStudent::route('/create'),
             'edit' => Pages\EditStudent::route('/{record}/edit'),
+            'qrCode' => Pages\GenerateQrCode::route('/{record}/qrCode'),
         ];
     }
 }
