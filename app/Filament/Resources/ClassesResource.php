@@ -10,8 +10,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ClassesResource extends Resource
 {
@@ -19,12 +17,15 @@ class ClassesResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Academic Management';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->unique(ignoreRecord: true)
                     ->maxLength(255),
             ]);
     }
@@ -35,6 +36,11 @@ class ClassesResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('sections.name')
+                    ->badge(),
+                Tables\Columns\TextColumn::make('students_count')
+                    ->counts('students')
+                    ->badge(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

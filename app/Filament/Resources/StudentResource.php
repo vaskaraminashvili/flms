@@ -21,7 +21,14 @@ class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+
+    protected static ?string $navigationGroup = 'Academic Management';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     public static function table(Table $table): Table
     {
@@ -77,6 +84,8 @@ class StudentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('generate_invoice')
+                    ->url(fn(Student $student) => route('invoice.generate', $student))
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

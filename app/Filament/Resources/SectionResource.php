@@ -7,17 +7,19 @@ use App\Filament\Resources\SectionResource\RelationManagers;
 use App\Models\Section;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Validation\Rules\Unique;
 
 class SectionResource extends Resource
 {
     protected static ?string $model = Section::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $navigationGroup = 'Academic Management';
 
     public static function form(Form $form): Form
     {
@@ -27,6 +29,9 @@ class SectionResource extends Resource
                     ->relationship('class', 'name'),
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->unique(ignoreRecord: true, modifyRuleUsing: function (Get $get, Unique $rule) {
+                        return $rule->where('class_id', $get('class_id'));
+                    })
                     ->maxLength(255),
             ]);
     }
@@ -40,6 +45,9 @@ class SectionResource extends Resource
                 Tables\Columns\TextColumn::make('class.name')
                     ->badge()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('students_count')
+                    ->counts('students')
+                    ->badge(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
